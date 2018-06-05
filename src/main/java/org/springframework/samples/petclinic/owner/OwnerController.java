@@ -15,6 +15,15 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.util.Collection;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.TypedQuery;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,10 +34,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.validation.Valid;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * @author Juergen Hoeller
@@ -41,7 +46,9 @@ class OwnerController {
 
     private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
     private final OwnerRepository owners;
-
+    
+	@PersistenceUnit(unitName="default")
+	private EntityManagerFactory emf;
 
     @Autowired
     public OwnerController(OwnerRepository clinicService) {
@@ -85,7 +92,10 @@ class OwnerController {
         }
 
         // find owners by last name
-        Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+        // GIRISH: Modified to demonstrate SQL injection flaws.
+        // Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+        Collection<Owner> results = findByLastName(owner.getLastName());
+        // Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", "not found");
@@ -101,6 +111,18 @@ class OwnerController {
         }
     }
 
+
+    private Collection<Owner> findByLastName(String lastName) {
+    	String sqlQuery = "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName LIKE '" + lastName +"%'";
+    	System.out.println( "Sending query: " + sqlQuery );
+
+    	EntityManager em = this.emf.createEntityManager();
+    	TypedQuery<Owner> query = em.createQuery(sqlQuery, Owner.class);
+
+    	return query.getResultList();
+    }
+
+    
     @GetMapping("/owners/{ownerId}/edit")
     public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
         Owner owner = this.owners.findById(ownerId);

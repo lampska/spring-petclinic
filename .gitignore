@@ -6,3 +6,6 @@ target/*
 *.iml
 /target
 _site/
+/working/
+/contrast.jar
+/bin/
