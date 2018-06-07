@@ -132,6 +132,7 @@
 			    <version>2.21.0</version>
 			    <configuration>
 			        <argLine>-javaagent:/Users/JWilliams/git/spring-petclinic/contrast.jar</argLine>
+					<forkCount>0</forkCount>
 			    </configuration>
 			</plugin>
 
