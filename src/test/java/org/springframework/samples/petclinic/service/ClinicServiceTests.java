@@ -218,7 +218,7 @@ class ClinicServiceTestConfiguration {
     @Bean
     @Primary
     public OwnerRepository ownerRepository() {
-    		System.out.println("Created Custom Owner Repository");
+    		// System.out.println("Created Custom Owner Repository");
         return new OwnerRepositoryCustomImpl();
     }
 }

@@ -36,7 +36,7 @@ public class CustomRepositoryFactory extends JpaRepositoryFactory {
         JpaEntityInformation<?, Serializable> entityInformation =
                 getEntityInformation(metadata.getDomainType());
  
-        System.out.println("CustomRepositoryFactory1 - repositoryInterface: " + repositoryInterface.getName());
+        // System.out.println("CustomRepositoryFactory1 - repositoryInterface: " + repositoryInterface.getName());
         if (repositoryInterface.getName().endsWith("OwnerRepository")) {
             //return new OwnerRepositoryCustomImpl((JpaEntityInformation<Owner, ?>) entityInformation, entityManager); //custom implementation
         		return null;
@@ -50,7 +50,7 @@ public class CustomRepositoryFactory extends JpaRepositoryFactory {
     	 
         Class<?> repositoryInterface = metadata.getRepositoryInterface();
 
-        System.out.println("CustomRepositoryFactory2 - repositoryInterface: " + repositoryInterface.getName());
+        // System.out.println("CustomRepositoryFactory2 - repositoryInterface: " + repositoryInterface.getName());
         if (repositoryInterface.getName().endsWith("OwnerRepository")) {
             return OwnerRepositoryCustomImpl.class;  // custom implementation
         } else {
