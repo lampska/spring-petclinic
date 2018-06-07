@@ -18,10 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.TypedQuery;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +26,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -46,9 +43,7 @@ class OwnerController {
 
     private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
     private final OwnerRepository owners;
-    
-	@PersistenceUnit(unitName="default")
-	private EntityManagerFactory emf;
+
 
     @Autowired
     public OwnerController(OwnerRepository clinicService) {
@@ -60,14 +55,14 @@ class OwnerController {
         dataBinder.setDisallowedFields("id");
     }
 
-    @GetMapping("/owners/new")
+    @RequestMapping(value = "/owners/new", method = RequestMethod.GET)
     public String initCreationForm(Map<String, Object> model) {
         Owner owner = new Owner();
         model.put("owner", owner);
         return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
     }
 
-    @PostMapping("/owners/new")
+    @RequestMapping(value = "/owners/new", method = RequestMethod.POST)
     public String processCreationForm(@Valid Owner owner, BindingResult result) {
         if (result.hasErrors()) {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
@@ -77,13 +72,13 @@ class OwnerController {
         }
     }
 
-    @GetMapping("/owners/find")
+    @RequestMapping(value = "/owners/find", method = RequestMethod.GET)
     public String initFindForm(Map<String, Object> model) {
         model.put("owner", new Owner());
         return "owners/findOwners";
     }
 
-    @GetMapping("/owners")
+    @RequestMapping(value = "/owners", method = RequestMethod.GET)
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
 
         // allow parameterless GET request for /owners to return all records
@@ -92,10 +87,7 @@ class OwnerController {
         }
 
         // find owners by last name
-        // GIRISH: Modified to demonstrate SQL injection flaws.
-        // Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
-        Collection<Owner> results = findByLastName(owner.getLastName());
-        // Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+        Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", "not found");
@@ -112,25 +104,14 @@ class OwnerController {
     }
 
 
-    private Collection<Owner> findByLastName(String lastName) {
-    	String sqlQuery = "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName LIKE '" + lastName +"%'";
-    	System.out.println( "Sending query: " + sqlQuery );
-
-    	EntityManager em = this.emf.createEntityManager();
-    	TypedQuery<Owner> query = em.createQuery(sqlQuery, Owner.class);
-
-    	return query.getResultList();
-    }
-
-    
-    @GetMapping("/owners/{ownerId}/edit")
+    @RequestMapping(value = "/owners/{ownerId}/edit", method = RequestMethod.GET)
     public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
         Owner owner = this.owners.findById(ownerId);
         model.addAttribute(owner);
         return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
     }
 
-    @PostMapping("/owners/{ownerId}/edit")
+    @RequestMapping(value = "/owners/{ownerId}/edit", method = RequestMethod.POST)
     public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId) {
         if (result.hasErrors()) {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
@@ -147,7 +128,7 @@ class OwnerController {
      * @param ownerId the ID of the owner to display
      * @return a ModelMap with the model attributes for the view
      */
-    @GetMapping("/owners/{ownerId}")
+    @RequestMapping("/owners/{ownerId}")
     public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
         ModelAndView mav = new ModelAndView("owners/ownerDetails");
         mav.addObject(this.owners.findById(ownerId));

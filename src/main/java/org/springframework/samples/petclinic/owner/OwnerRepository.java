@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import java.util.Collection;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Sam Brannen
  * @author Michael Isvy
  */
+
+@NoRepositoryBean
 public interface OwnerRepository extends Repository<Owner, Integer> {
 
     /**
