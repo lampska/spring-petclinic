@@ -125,11 +125,21 @@
 
 	<build>
 		<plugins>
+			<!-- Verify security during automated tests -->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <version>2.21.0</version>
+			    <configuration>
+			        <argLine>-javaagent:/Users/JWilliams/git/spring-petclinic/contrast.jar</argLine>
+			    </configuration>
+			</plugin>
+
+			<!-- Verify security during normal use -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<!-- Add Contrast for continuous security testing -->
 					<agent>/Users/JWilliams/git/spring-petclinic/contrast.jar</agent>
 					<jvmArguments>
 						-Dcontrast.level=debug
