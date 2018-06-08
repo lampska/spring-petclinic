@@ -131,16 +131,14 @@
 			    </configuration>
 			</plugin>
 
-			<!-- Verify security during normal use -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<!-- Verify security during normal use -->
 					<agent>${project.basedir}/contrast.jar</agent>
 					<jvmArguments>
-						-Dcontrast.level=debug
 						-Dcontrast.dir=working
-						-Dcontrast.server.activity.period=5000
 						-Dcontrast.log.daily=true
 					</jvmArguments>
 				</configuration>
