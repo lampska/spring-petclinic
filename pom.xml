@@ -127,6 +127,8 @@
 			        <argLine>
 			            -javaagent:${project.basedir}/jacocoagent.jar=destfile=${project.basedir}/target/jacoco.exec
 			            -javaagent:${project.basedir}/contrast.jar
+			            -Dcontrast.dir=${project.basedir}/working
+						-Dcontrast.log.daily=true
 			        </argLine>
 			    </configuration>
 			</plugin>
@@ -136,8 +138,9 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<!-- Verify security during normal use -->
-					<agent>${project.basedir}/jacocoagent.jar=destfile=${project.basedir}/target/jacoco.exec,${project.basedir}/contrast.jar</agent>
 					<jvmArguments>
+						-javaagent:${project.basedir}/jacocoagent.jar=destfile=${project.basedir}/target/jacoco.exec
+						-javaagent:${project.basedir}/contrast.jar
 						-Dcontrast.dir=${project.basedir}/working
 						-Dcontrast.log.daily=true
 					</jvmArguments>
