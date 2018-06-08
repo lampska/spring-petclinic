@@ -129,6 +129,7 @@
 			            -javaagent:${project.basedir}/contrast.jar
 			            -Dcontrast.dir=${project.basedir}/working
 						-Dcontrast.log.daily=true
+						-Dcontrast.override.appversion=${JOB_NAME}-${BUILD_NUMBER}
 			        </argLine>
 			    </configuration>
 			</plugin>
