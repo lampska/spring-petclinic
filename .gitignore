@@ -7,6 +7,5 @@ target/*
 /target
 _site/
 /working/
-/contrast.jar
 /bin/
 /pom.maven
