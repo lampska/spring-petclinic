@@ -119,17 +119,20 @@
 
 	<build>
 		<plugins>
-			<!-- Verify security during automated tests. -->
 			<plugin>
 			    <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-surefire-plugin</artifactId>
 			    <configuration>
+					<!-- Verify security and coverage during automated tests. -->
 			        <argLine>
 			            -javaagent:${project.basedir}/jacocoagent.jar=destfile=${project.basedir}/target/jacoco.exec
 			            -javaagent:${project.basedir}/contrast.jar
 			            -Dcontrast.dir=${project.basedir}/working
 						-Dcontrast.log.daily=true
-			        </argLine>
+						-Dcontrast.override.appname=spring-petclinic
+						-Dcontrast.server=TEST-882
+						-Dcontrast.env=qa
+					</argLine>
 			    </configuration>
 			</plugin>
 
@@ -137,12 +140,14 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<!-- Verify security during normal use -->
+					<!-- Verify security and coverage during normal use -->
 					<jvmArguments>
-						-javaagent:${project.basedir}/jacocoagent.jar=destfile=${project.basedir}/target/jacoco.exec
 						-javaagent:${project.basedir}/contrast.jar
 						-Dcontrast.dir=${project.basedir}/working
 						-Dcontrast.log.daily=true
+						-Dcontrast.override.appname=spring-petclinic
+						-Dcontrast.server=DEV-193
+						-Dcontrast.env=development
 					</jvmArguments>
 				</configuration>
 				<executions>
