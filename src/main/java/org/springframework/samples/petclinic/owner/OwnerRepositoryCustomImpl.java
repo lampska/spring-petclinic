@@ -18,8 +18,8 @@ public class OwnerRepositoryCustomImpl implements OwnerRepository {
     
 	@Override
 	public Collection<Owner> findByLastName(String lastName) {
-		// System.out.println("Vulnerable method 1");
-	    	String sqlQuery = "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName LIKE '" + lastName +"%'";
+
+			String sqlQuery = "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName LIKE '" + lastName +"%'";
 	    	
 	    	TypedQuery<Owner> query = this.entityManager.createQuery(sqlQuery, Owner.class);
 	
@@ -28,7 +28,7 @@ public class OwnerRepositoryCustomImpl implements OwnerRepository {
 
 	@Override
 	public Owner findById(Integer id) {
-		// System.out.println("Vulnerable method 2");
+
 	    	String sqlQuery = "SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id = " + id;
 	    	
 	    	TypedQuery<Owner> query = this.entityManager.createQuery(sqlQuery, Owner.class);
