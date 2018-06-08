@@ -138,7 +138,7 @@
 					<!-- Verify security during normal use -->
 					<agent>${project.basedir}/contrast.jar</agent>
 					<jvmArguments>
-						-Dcontrast.dir=working
+						-Dcontrast.dir=${project.basedir}/working
 						-Dcontrast.log.daily=true
 					</jvmArguments>
 				</configuration>
