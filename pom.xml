@@ -130,7 +130,7 @@
 			            -Dcontrast.dir=${project.basedir}/working
 						-Dcontrast.log.daily=true
 						-Dcontrast.override.appname=spring-petclinic
-						-Dcontrast.override.appversion=1234
+						-Dcontrast.override.appversion=spring-petclinic-${BUILD_NUMBER}
 						-Dcontrast.server=TEST-882
 						-Dcontrast.env=qa
 					</argLine>
