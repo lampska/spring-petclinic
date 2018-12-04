@@ -19,6 +19,21 @@ You can then access petclinic here: http://localhost:8080/
 ## In case you find a bug/suggested improvement for Spring Petclinic
 Our issue tracker is available here: https://github.com/spring-projects/spring-petclinic/issues
 
+## Contrast configuration
+
+Download contrast.jar java agent and place it to the repository folder.
+
+Edit pom.xml and configure contrast and contrast-maven profiles.
+ * contrast: customize app and server names, if necessary
+ * contrast-maven: add your api configuration
+
+Eclipse maven run configuration with Contrast
+ * Base directory: ${project_loc:spring-petclinic}
+ * Goals: spring-boot:run
+ * Profiles: contrast
+
+To run selenium tests with Contrast: mvn -P contrast-maven clean verify
+
 
 ## Database configuration
 

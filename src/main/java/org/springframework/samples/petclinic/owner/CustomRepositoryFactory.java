@@ -7,7 +7,8 @@ import javax.persistence.EntityManager;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
-import org.springframework.data.jpa.repository.support.QueryDslJpaRepository;
+//import org.springframework.data.jpa.repository.support.QueryDslJpaRepository; //1.5.4.RELEASE
+//import org.springframework.data.jpa.repository.support.QuerydslJpaPredicateExecutor; //2.1.0.RELEASE
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -36,7 +37,7 @@ public class CustomRepositoryFactory extends JpaRepositoryFactory {
         JpaEntityInformation<?, Serializable> entityInformation =
                 getEntityInformation(metadata.getDomainType());
  
-        // System.out.println("CustomRepositoryFactory1 - repositoryInterface: " + repositoryInterface.getName());
+        System.out.println("CustomRepositoryFactory1 - repositoryInterface: " + repositoryInterface.getName());
         if (repositoryInterface.getName().endsWith("OwnerRepository")) {
             //return new OwnerRepositoryCustomImpl((JpaEntityInformation<Owner, ?>) entityInformation, entityManager); //custom implementation
         		return null;
@@ -50,7 +51,7 @@ public class CustomRepositoryFactory extends JpaRepositoryFactory {
     	 
         Class<?> repositoryInterface = metadata.getRepositoryInterface();
 
-        // System.out.println("CustomRepositoryFactory2 - repositoryInterface: " + repositoryInterface.getName());
+        System.out.println("CustomRepositoryFactory2 - repositoryInterface: " + repositoryInterface.getName());
         if (repositoryInterface.getName().endsWith("OwnerRepository")) {
             return OwnerRepositoryCustomImpl.class;  // custom implementation
         } else {
