@@ -5,16 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.samples</groupId>
     <artifactId>spring-petclinic</artifactId>
-    <!-- <version>1.5.4</version> -->
-    <version>2.1.0</version>
+    <version>1.5.4</version>
+
     <name>petclinic</name>
     
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <!-- <version>1.5.4.RELEASE</version> -->
-        <!-- Fix: outdated components -->
-        <version>2.1.0.RELEASE</version>
+        <version>1.5.4.RELEASE</version>
     </parent>
 
 
@@ -33,9 +31,9 @@
         <webjars-jquery-ui.version>1.11.4</webjars-jquery-ui.version>
         <webjars-jquery.version>2.2.4</webjars-jquery.version>
         <wro4j.version>1.8.0</wro4j.version>
-        <!-- <thymeleaf.version>3.0.6.RELEASE</thymeleaf.version> -->
+        <thymeleaf.version>3.0.6.RELEASE</thymeleaf.version>
 		<!-- Fix: outdated components -->
-        <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
+        <!-- <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version> -->
         <cobertura.version>2.7</cobertura.version>
 
     </properties>
@@ -68,11 +66,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Fix: CSRF spring security, also for for authentication and authorization -->
 <!-- 		<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>         -->
+        </dependency>     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -87,8 +84,8 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>5.0.4.Final</version>
-        </dependency>
- -->
+        </dependency> -->
+
         <!-- Databases - Uses HSQL by default -->
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -319,6 +316,7 @@
                         -Dcontrast.override.appversion=petclinic-${build.number}
                         -Dcontrast.server=spring-petclinic-qa
                         -Dcontrast.env=qa
+                        -Dcsrf.protected.uris=csrf-urls.txt
                     </argLine>
                 </configuration>
             </plugin>

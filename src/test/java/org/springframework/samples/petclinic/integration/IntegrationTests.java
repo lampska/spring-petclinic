@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.cache.annotation.EnableCaching;
@@ -31,7 +31,8 @@ public class IntegrationTests {
     @Autowired
     private WebDriver webDriver;
 
-    @org.springframework.boot.web.server.LocalServerPort
+    //@org.springframework.boot.web.server.LocalServerPort
+    @LocalServerPort
     private int serverPort;
     
     

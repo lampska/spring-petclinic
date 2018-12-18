@@ -1,0 +1,173 @@
+== Lab 03 - SQL injection ==
+
+Requirements:
+- Lab 01 completed
+
+Goals:
+- SQLi in practice 
+- Learn how Contrast Assess and Protect work
+- Learn about JPA
+
+Task 1 - discovery
+- Launch application with Contrast
+- Navigate to Find Owners and perform a last name search: Davis
+- Contrast UI: navigate Applications -> your application -> Vulnerabilities
+- Review the Hibernate Injection details
+- PASS: Contrast Assess succesfully discovers the vulnerability
+
+Task 2 - confirmation
+- Contrast Eclipse plugin: navigate to the root cause by using the Events
+- Open the 'rule violation' event
+- Find a custom code entry (org.springframework.samples.petclinic) and double click
+- Review the source code and Contrast 'how to fix'
+- PASS: You are able to find the root cause
+
+Task 3 - exploitation
+- Craft an exploit that returns all the owner entries
+- PASS: exploit is successful
+
+Task 4 - mitigation with Contrast Protect
+- Double check Contrast Protect is enabled
+- Enable SQL injection blocking
+ * Contrast UI -> your application -> Policy -> Protect -> SQL injection: Block
+- Wait couple of minutes
+- Re-execute the exploit
+- PASS: Contrast blocks exploitation
+
+Task 5 - remediation by fixing the root cause
+- Disable SQL injection blocking
+ * Contrast UI -> your application -> Policy -> Protect -> SQL injection: Monitor
+- Use Contrast remediation guidance to fix the root cause
+ * If/when testing, you can set the Hibernate injection vulnerability state to Remediated.
+ * Contrast will re-open the vulnerability if the fix does not work
+- PASS: exploit no longer works & vulnerability stays Remediated
+
+Optional
+- What is arguably, and given you have time, the best way to fix this Hibernate injection?
+
+
+== End of Lab 03 ==
+
+Hints & spoilers below
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hints
+
+
+
+
+
+
+
+Task 3:
+- https://www.owasp.org/index.php/Top_10-2017_A1-Injection
+- https://www.owasp.org/index.php/Testing_for_SQL_Injection_(OTG-INPVAL-005)
+
+Task 5:
+- https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet
+
+Optional:
+Compare OwnerRepositoryCustomImpl and OwnerRepositoryCustomImpl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SPOILERS
+
+
+
+
+
+
+
+
+
+
+below
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Task 5:
+
+Simple fix using bind variables
+
+Replace code at
+org.springframework.samples.petclinic.owner. OwnerRepositoryCustomImpl.findByLastName(String lastName)
+
+with:
+
+String sqlQuery = "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName = :lastName";
+TypedQuery<Owner> query = this.entityManager.createQuery(sqlQuery, Owner.class);
+query.setParameter("lastName", lastName);
+return query.getResultList();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Optional task:
+
+Refactor the code and remove OwnerRepositoryCustomImpl.java CustomRepositoryFactory.java CustomRepositoryFactoryBean.java

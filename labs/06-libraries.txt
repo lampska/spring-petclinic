@@ -1,0 +1,23 @@
+== Lab 07 - Using components with known vulnerabilities ==
+
+Requirements:
+- Lab 01 completed
+
+Goals:
+- Learn about open source risk
+
+Task 1 - discovery
+- Launch application with Contrast
+- Contrast UI: navigate Applications -> your application -> Libraries
+ * Filter view to show vulnerable Libraries
+- PASS: Contrast succesfully displays libraries with known vulnerabilities
+
+Task 2 - remediation
+- Update application to use the latest Spring boot framework RELEASE
+- Relaunch application with Contrast
+- Contrast UI: navigate Applications -> your application -> Libraries
+- PASS: Contrast succesfully displays that libraries have been updated
+
+
+
+== End of Lab ==

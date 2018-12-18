@@ -1,0 +1,112 @@
+== Lab 01 - Contrast java project setup ==
+
+Requirements:
+- java 1.8, maven, git
+- java IDE
+- Contrast credentials
+
+Goals:
+- Able to run the project with Contrast
+
+Task 1 - setup project
+- git clone https://github.com/lampska/spring-petclinic
+- import spring-petclinic to Eclipse/IntelliJ IDE as a maven project (pom.xml)
+- Create IDE run config 'plain'
+ * [Eclipse] base directory: ${project_loc:spring-petclinic}
+ * goals: spring-boot:run
+- Create IDE run config 'contrast'
+ * [Eclipse] base directory: ${project_loc:spring-petclinic}
+ * goals: spring-boot:run
+ * profiles: contrast
+- PASS: Verify that you can compile and run the application with run config 'plain'
+
+Task 2 - download and test contrast agent
+- Download java agent from Contrast UI and save it to the cloned folder
+- Create a 'working' dir for Contrast, e.g. spring-petclinic/working
+- test connectivity: java -jar contrast.jar diagnostic
+- PASS: Verify you see output "[+] Client can connect directly to the Contrast TeamServer."
+
+Task 3 - configure java agent
+- Edit Contrast agent parameters as instructed (application name, server name)
+ * pom.xml: contrast profile 
+ * pom.xml: contrast-maven profile
+- Run spring-petclinic 'contrast' profile in IDE or with maven
+- Optional: study maven-surefire and spring-boot-maven plugins 
+- PASS: Verify that you can see your server and application name in Contrast UI
+
+Task 4 - apply contrast licenses
+- Contrast UI -> Applications: apply Assess license to your application name
+- Contrast UI -> Servers: apply Protect license to your server name
+- Restart the spring-petclinic with 'contrast' profile
+- PASS: Contrast UI - Assess and Protect are both enabled
+
+Optional:
+The project comes with test cases. 
+-Where are they?
+-How would you run them with Contrast?
+
+== End of Lab 01 ==
+
+Hints & spoilers below
+
+
+
+
+
+
+
+
+HINTS
+
+none
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SPOILERS
+
+below
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Task 1: mvn spring-boot:run 
+Task 3: mvn spring-boot:run -P contrast
+Optional: mvn clean verify -P contrast-maven

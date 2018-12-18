@@ -18,12 +18,8 @@ public class OwnerRepositoryCustomImpl implements OwnerRepository {
 	@Override
 	public Collection<Owner> findByLastName(String lastName) {
 			String sqlQuery = "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName = '" + lastName +"'";
-			// Point fix sql injection 1/2
-			//String sqlQuery = "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName = :lastName";
 	    	
 	    	TypedQuery<Owner> query = this.entityManager.createQuery(sqlQuery, Owner.class);
-	    	// Point fix sql injection 2/2
-	    	//query.setParameter("lastName", lastName);
 	    	
 	    	return query.getResultList();
 	}

