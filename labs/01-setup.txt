@@ -27,7 +27,8 @@ Task 2 - download and test contrast agent
 - PASS: Verify you see output "[+] Client can connect directly to the Contrast TeamServer."
 
 Task 3 - configure java agent
-- Edit Contrast agent parameters as instructed (application name, server name)
+- When doing these labs in a group setting using the same Contrast organization,
+please edit Contrast agent parameters so that your application and server name are unique.
  * pom.xml: contrast profile 
  * pom.xml: contrast-maven profile
 - Run spring-petclinic 'contrast' profile in IDE or with maven

@@ -1,4 +1,4 @@
-== Lab 07 - Using components with known vulnerabilities ==
+== Lab 06 - Using components with known vulnerabilities ==
 
 Requirements:
 - Lab 01 completed
@@ -17,7 +17,3 @@ Task 2 - remediation
 - Relaunch application with Contrast
 - Contrast UI: navigate Applications -> your application -> Libraries
 - PASS: Contrast succesfully displays that libraries have been updated
-
-
-
-== End of Lab ==

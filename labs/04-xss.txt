@@ -3,6 +3,7 @@
 Requirements:
 - Lab 01 completed
 - Lab 03 completed
+- some knowledge on Thymeleaf templates
 - optional: netcat or python
 
 Goals:
@@ -87,7 +88,7 @@ Hints
 
 Task 2
 - Review OwnerController class
-- Review the Thymeleaf template that is used to renders the html
+- Review the Thymeleaf template that is used to render owner details (resources/templates)
 
 
 
@@ -143,6 +144,7 @@ below
 
 
 Task 2:
+- resources/templates/owners/ownerDetails.html
 - th:text performs output encoding, th:utext does not  
 
 
@@ -224,4 +226,4 @@ Task 4:
 
 
 Task 6
-- Change th:utext to th:text
+- Change th:utext to th:text in resources/templates/owners/ownerDetails.html
