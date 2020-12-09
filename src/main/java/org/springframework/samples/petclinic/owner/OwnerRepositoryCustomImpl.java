@@ -19,7 +19,10 @@ public class OwnerRepositoryCustomImpl implements OwnerRepository {
 	public Collection<Owner> findByLastName(String lastName) {
 			String sqlQuery = "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName = '" + lastName +"'";
 	    	
+			//String sqlQuery = "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName = :lName";
+			
 	    	TypedQuery<Owner> query = this.entityManager.createQuery(sqlQuery, Owner.class);
+	    	//query.setParameter("lName", lastName);
 	    	
 	    	return query.getResultList();
 	}

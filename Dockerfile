@@ -1,30 +1,44 @@
+#### Sample build using for instance Jenkins build post-step
+## docker build -t $POM_ARTIFACTID:$POM_VERSION
+## --build-arg APP_NAME=$POM_DISPLAYNAME
+## --build-arg APP_VERSION=$POM_VERSION 
+## --build-arg CONTRAST__API__URL=$CONTRAST__API__URL
+## --build-arg CONTRAST__API__USER_NAME=$CONTRAST__API__USER_NAME
+## --build-arg CONTRAST__API__API_KEY=$CONTRAST__API__API_KEY
+## --build-arg CONTRAST__API__SERVICE_KEY=$CONTRAST__API__SERVICE_KEY
+## /path/to/spring-petclinic/
+
+
+#### Contrast is enabled by -javaagent:/opt/contrast/contrast.jar
+#### For example
+## docker run --env-file uat.env $POM_ARTIFACTID:$POM_VERSION
+
+
 FROM openjdk:8-slim
 
-ARG CONTRAST_AGENT_VERSION=3.7.9.17038
-ENV APP_VERSION=1.5.4
-RUN mkdir /opt/app
-## create jar by running mvn -DskipTests=true package
+ARG APP_NAME=Petclinic
+ARG APP_VERSION=1.5.4
+ENV APP_VERSION ${APP_VERSION}
+RUN mkdir -p /opt/app
 ADD target/spring-petclinic-$APP_VERSION.jar /opt/app
 
-## Contrast configuration template
-# /opt/contrast this could be a local VOLUME as well
-# networked volumes not recommended
-RUN mkdir /opt/contrast
-ADD contrast_security.yaml /opt/contrast
-ADD https://repo1.maven.org/maven2/com/contrastsecurity/contrast-agent/$CONTRAST_AGENT_VERSION/contrast-agent-$CONTRAST_AGENT_VERSION.jar /opt/contrast/contrast.jar
 
-ENV CONTRAST__OPTS="-javaagent:/opt/contrast/contrast.jar -Dcontrast.config.path=/opt/contrast/contrast_security.yaml"
-ENV CONTRAST__SERVER__ENVIRONMENT="development"
-ENV CONTRAST__APPLICATION__VERSION=$APP_VERSION
-## Set these using the orchestrator services, for instance k8s secretsmap
-ENV CONTRAST__API__URL=""
-ENV CONTRAST__API__USER_NAME=""
-ENV CONTRAST__API__API_KEY=""
-ENV CONTRAST__API__SERVICE_KEY=""
+RUN mkdir -p /opt/contrast
+ADD target/lib/contrast.jar /opt/contrast/
 
-## Enable agent
-# ENV JAVA_TOOL_OPTIONS=$CONTRAST__OPTS
-## End Contrast configuration template
+ARG CONTRAST__API__URL
+ARG CONTRAST__API__USER_NAME
+ARG CONTRAST__API__API_KEY
+ARG CONTRAST__API__SERVICE_KEY
 
-ENTRYPOINT java -Dserver.port=8080 -jar /opt/app/spring-petclinic-$APP_VERSION.jar
-EXPOSE 8080
+ENV CONTRAST__API__URL=${CONTRAST__API__URL}
+ENV CONTRAST__API__USER_NAME=${CONTRAST__API__USER_NAME}
+ENV CONTRAST__API__API_KEY=${CONTRAST__API__API_KEY}
+ENV CONTRAST__API__SERVICE_KEY=${CONTRAST__API__SERVICE_KEY}
+
+ENV CONTRAST__APPLICATION__NAME=${APP_NAME}
+ENV CONTRAST__AGENT__JAVA__STANDALONE_APP_NAME=${APP_NAME}
+ENV CONTRAST__APPLICATION__VERSION=${APP_VERSION}
+
+ENTRYPOINT java -Dserver.port=9999 -jar /opt/app/spring-petclinic-$APP_VERSION.jar
+EXPOSE 9999

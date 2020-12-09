@@ -6,8 +6,7 @@
     <groupId>org.springframework.samples</groupId>
     <artifactId>spring-petclinic</artifactId>
     <version>1.5.4</version>
-
-    <name>petclinic</name>
+    <name>Petclinic</name>
     
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -35,6 +34,9 @@
 		<!-- Fix: outdated components -->
         <!-- <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version> -->
         <cobertura.version>2.7</cobertura.version>
+        <contrast.version>3.7.10.17657</contrast.version>
+        <contrast.maven.version>2.10</contrast.maven.version>
+        <jacoco.version>0.8.6</jacoco.version>
 
     </properties>
 
@@ -74,6 +76,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -137,8 +144,20 @@
             <artifactId>contrast-maven-plugin</artifactId>
             <version>2.2</version>
         </dependency>
-
-        <!-- Girish: Integration test with selenium -->
+		<!-- https://mvnrepository.com/artifact/com.contrastsecurity/contrast-agent -->
+		<dependency>
+    		<groupId>com.contrastsecurity</groupId>
+    		<artifactId>contrast-agent</artifactId>
+    		<version>${contrast.version}</version>
+		</dependency>
+        <!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.agent</artifactId>
+            <version>${jacoco.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Integration test with selenium -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-remote-driver</artifactId>
@@ -161,16 +180,46 @@
 			<artifactId>htmlunit-driver</artifactId>  
 			<!-- <version>2.20</version> -->
 		</dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+
+
     </dependencies>
 
-    <build>
-      <plugins>
-
+    <build> 
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-agents</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Copy agent jars from m2 repository to target/lib -->
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.contrastsecurity</groupId>
+                                    <artifactId>contrast-agent</artifactId>
+                                    <version>${contrast.version}</version>
+                                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                    <overWrite>true</overWrite>
+                                    <destFileName>contrast.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jacoco</groupId>
+                                    <artifactId>org.jacoco.agent</artifactId>
+                                    <version>${jacoco.version}</version>
+                                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                    <overWrite>true</overWrite>
+                                    <destFileName>jacoco.jar</destFileName>
+                                </artifactItem>                                
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -275,21 +324,21 @@
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-maven-plugin</artifactId>
     		<executions>
-                    <execution>
-                        <!-- Spring Boot Actuator displays build-related information if a META-INF/build-info.properties 
-                            file is present -->
-                        <goals>
-                            <goal>build-info</goal>
-                        </goals>
-                        <configuration>
-                            <additionalProperties>
-                                <encoding.source>${project.build.sourceEncoding}</encoding.source>
-                                <encoding.reporting>${project.reporting.outputEncoding}</encoding.reporting>
-                                <java.source>${maven.compiler.source}</java.source>
-                                <java.target>${maven.compiler.target}</java.target>
-                            </additionalProperties>
-                        </configuration>
-                    </execution>
+                <execution>
+                    <!-- Spring Boot Actuator displays build-related information if a META-INF/build-info.properties 
+                    file is present -->
+                    <goals>
+                        <goal>build-info</goal>
+                    </goals>
+                    <configuration>
+                        <additionalProperties>
+                            <encoding.source>${project.build.sourceEncoding}</encoding.source>
+                            <encoding.reporting>${project.reporting.outputEncoding}</encoding.reporting>
+                            <java.source>${maven.compiler.source}</java.source>
+                            <java.target>${maven.compiler.target}</java.target>
+                        </additionalProperties>
+                    </configuration>
+                </execution>
              </executions>
           </plugin>
        </plugins>
@@ -305,37 +354,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-          <!--       Verify security and coverage during automated tests. -->
+                <!-- Use Contrast Security and Jacoco code coverage agents during selenium tests. -->
+                <!-- Have contrast_security.yaml in /etc/contrast -->
                 <configuration>
                     <argLine>
-                        -javaagent:${project.basedir}/jacocoagent.jar=destfile=${project.basedir}/target/jacoco.exec
-                        -javaagent:${project.basedir}/contrast.jar
-                        -Dcontrast.dir=${project.basedir}/working
-                        -Dcontrast.log.daily=true
-                        -Dcontrast.standalone.appname=petclinic
-                        -Dcontrast.override.appversion=petclinic-${build.number}
-                        -Dcontrast.server=spring-petclinic-qa
-                        -Dcontrast.env=qa
-                        -Dcsrf.protected.uris=csrf-urls.txt
+                        <!-- -javaagent:${project.build.directory}/lib/jacoco.jar -->
+                        -javaagent:${project.build.directory}/lib/contrast.jar
+                        -Dcontrast.agent.java.standalone_app_name=${project.name}
+                        -Dcontrast.application.name=${project.name}
+                        -Dcontrast.application.version=${project.version}
                     </argLine>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <!-- Verify security and coverage during normal use -->
-                    <jvmArguments>
-                        -javaagent:${project.basedir}/contrast.jar
-                        -Dcontrast.dir=${project.basedir}/working
-                        -Dcontrast.log.daily=true
-                        -Dcontrast.standalone.appname=petclinic
-                        -Dcontrast.override.appversion=petclinic-${build.number}
-                        -Dcontrast.server=spring-petclinic-dev
-                        -Dcontrast.env=development
-                        -Dcontrast.classpath.libs=true
-                    </jvmArguments>
-                </configuration>
                 <executions>
                     <execution>
                         <!-- Spring Boot Actuator displays build-related information if a META-INF/build-info.properties 
@@ -364,7 +397,7 @@
           <plugin>
 		       <groupId>com.contrastsecurity</groupId>
 		       <artifactId>contrast-maven-plugin</artifactId>
-		       <version>2.2</version>
+		       <version>${contrast.maven.version}</version>
 		       <executions>
 		             <execution>
 		                 <id>install-contrast-jar</id>
@@ -386,8 +419,8 @@
 			         <serviceKey>fixme</serviceKey>
 			         <apiUrl>http:fixme/Contrast/api</apiUrl>
 			         <orgUuid>fixme</orgUuid>
-			         <appName>petclinic</appName>
-			         <appVersion>petclinic-${build.number}</appVersion>
+			         <appName>${project.name}</appName>
+			         <appVersion>${project.version}</appVersion>
 			         <serverName>Maven.BuildServer.Local</serverName>
 			         <minSeverity>High</minSeverity>
 		        </configuration>
