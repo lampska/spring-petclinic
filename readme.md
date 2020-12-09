@@ -7,9 +7,9 @@ Vulnerable version of the venerable PetClinic
 
 ## Running petclinic locally
 ```
-	git clone https://github.com/spring-projects/spring-petclinic.git
-	cd spring-petclinic
-	./mvnw spring-boot:run
+git clone https://github.com/spring-projects/spring-petclinic.git
+cd spring-petclinic
+./mvnw spring-boot:run
 ```
 
 You can then access petclinic here: http://localhost:8080/
@@ -21,19 +21,46 @@ Our issue tracker is available here: https://github.com/spring-projects/spring-p
 
 ## Contrast configuration
 
-Download contrast.jar java agent and place it to the repository folder.
+### Running locally
 
-Edit pom.xml and configure contrast and contrast-maven profiles.
- * contrast: customize app and server names, if necessary
- * contrast-maven: add your api configuration
+* Download contrast_security.yaml
+* Build the project with 'contrast' profile
+* Run by specifying target/lib/contrast.jar as javaagent
 
-Eclipse maven run configuration with Contrast
- * Base directory: ${project_loc:spring-petclinic}
- * Goals: spring-boot:run
- * Profiles: contrast
+```
+mvn clean package -P contrast
+java -javaagent:target/lib/contrast.jar -Dcontrast.config.path=/path/to/contrast_security.yaml -jar target/spring-petclinic-*.jar
+```
 
-To run selenium tests with Contrast: mvn -P contrast-maven clean verify
+### Running in Docker
 
+Provide your Contrast agent API credentials to either docker build or docker run command.
+
+```
+mvn clean package -P contrast
+docker build -t petclinic:1.5.4 --build-arg CONTRAST__API__URL=$CONTRAST__API__URL --build-arg CONTRAST__API__USER_NAME=$CONTRAST__API__USER_NAME --build-arg CONTRAST__API__API_KEY=$CONTRAST__API__API_KEY --build-arg CONTRAST__API__SERVICE_KEY=$CONTRAST__API__SERVICE_KEY .
+docker run --env-file uat.env petclinic:1.5.4
+```
+
+Alternatively, you can edit the Dockerfile and ADD your contrast_security.yaml to /etc/contrast/java
+
+```
+RUN mkdir -p /etc/contrast/java
+ADD contrast_security.yaml /etc/contrast/java
+```
+
+Then
+
+```
+docker build -t petclinic:1.5.4
+docker run --env-file uat.env petclinic:1.5.4
+```
+
+The uat.env will enable Contrast instrumentation in Docker by leveraging JAVA_TOOL_OPTIONS
+
+```
+JAVA_TOOL_OPTIONS=-javaagent:/opt/contrast/contrast.jar 
+```
 
 ## Database configuration
 
