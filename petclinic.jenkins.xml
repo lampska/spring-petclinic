@@ -1,0 +1,122 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<maven2-moduleset plugin="maven-plugin@3.7">
+  <actions/>
+  <description>Petclinic</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.32.0">
+      <projectUrl>https://github.com/lampska/spring-petclinic.git/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@4.2.2">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/lampska/spring-petclinic.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>org.springframework.samples</groupId>
+    <artifactId>spring-petclinic</artifactId>
+  </rootModule>
+  <goals>clean package -P contrast -Dbuild.number=$BUILD_NUMBER</goals>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <ignoreUnsuccessfulUpstreams>false</ignoreUnsuccessfulUpstreams>
+  <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
+  <resolveDependencies>false</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>false</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <blockTriggerWhenBuilding>true</blockTriggerWhenBuilding>
+  <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters/>
+  <publishers>
+    <com.aspectsecurity.contrast.contrastjenkins.VulnerabilityTrendRecorder plugin="contrast-continuous-application-security@3.6">
+      <conditions>
+        <com.aspectsecurity.contrast.contrastjenkins.ThresholdCondition>
+          <thresholdCount>0</thresholdCount>
+          <thresholdSeverity>Critical</thresholdSeverity>
+          <applicationDefinition>
+            <matchBy>APPLICATION_ORIGIN_NAME</matchBy>
+            <applicationOriginName></applicationOriginName>
+            <agentType>JAVA</agentType>
+            <failOnAppNotFound>false</failOnAppNotFound>
+          </applicationDefinition>
+          <applicationId>Petclinic (10ae4f14-b726-48b2-bc13-aad99f4bb23f)</applicationId>
+          <failOnAppNotFound>false</failOnAppNotFound>
+          <applicationState>0</applicationState>
+          <matchBy>APPLICATION_ID</matchBy>
+          <autoRemediated>false</autoRemediated>
+          <confirmed>true</confirmed>
+          <suspicious>true</suspicious>
+          <notAProblem>false</notAProblem>
+          <remediated>false</remediated>
+          <reported>true</reported>
+          <fixed>false</fixed>
+          <beingTracked>true</beingTracked>
+          <untracked>true</untracked>
+        </com.aspectsecurity.contrast.contrastjenkins.ThresholdCondition>
+      </conditions>
+      <teamServerProfileName>contrast-apptwo</teamServerProfileName>
+      <overrideGlobalThresholdConditions>true</overrideGlobalThresholdConditions>
+      <queryBy>3</queryBy>
+    </com.aspectsecurity.contrast.contrastjenkins.VulnerabilityTrendRecorder>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper plugin="credentials-binding@1.24">
+      <bindings>
+        <org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+          <credentialsId>CONTRAST__API_KEY</credentialsId>
+          <variable>CONTRAST__API__API_KEY</variable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+        <org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+          <credentialsId>CONTRAST__SERVICE_KEY</credentialsId>
+          <variable>CONTRAST__API__SERVICE_KEY</variable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+        <org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+          <credentialsId>CONTRAST__USER_NAME</credentialsId>
+          <variable>CONTRAST__API__USER_NAME</variable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+        <org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+          <credentialsId>CONTRAST__URL</credentialsId>
+          <variable>CONTRAST__API__URL</variable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+      </bindings>
+    </org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+  </buildWrappers>
+  <prebuilders/>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>docker build -t $POM_ARTIFACTID:$POM_VERSION --build-arg APP_NAME=$POM_DISPLAYNAME --build-arg APP_VERSION=$POM_VERSION --build-arg CONTRAST__API__URL=$CONTRAST__API__URL --build-arg CONTRAST__API__USER_NAME=$CONTRAST__API__USER_NAME --build-arg CONTRAST__API__API_KEY=$CONTRAST__API__API_KEY --build-arg CONTRAST__API__SERVICE_KEY=$CONTRAST__API__SERVICE_KEY $WORKSPACE</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>
