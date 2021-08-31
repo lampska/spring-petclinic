@@ -43,6 +43,8 @@ jobs:
           CONTRAST__API__USER_NAME: ${{ secrets.CONTRAST__API__USER_NAME }}
           CONTRAST__API__API_KEY: ${{ secrets.CONTRAST__API__API_KEY }}
           CONTRAST__API__SERVICE_KEY: ${{ secrets.CONTRAST__API__SERVICE_KEY }}
+          CONTRAST__AGENT__JAVA__STANDALONE_APP_NAME: Petclinic
+          CONTRAST__SERVER__NAME: Github Actions
 
       - name: Upload Contrast Scan Results
         uses: github/codeql-action/upload-sarif@v1
